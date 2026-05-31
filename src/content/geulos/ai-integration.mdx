@@ -1,0 +1,79 @@
+# AI 통합 — Claude REST + 6 도구 + Prompt Caching
+
+GeulOS는 AI를 *외부 화이트박스 도구*로 다룬다. AI-agnostic이라 어떤 LLM이든 같은
+와이어 프로토콜로 동작할 수 있지만, 현재 1급 구현은 Anthropic Claude REST.
+
+## 세션 모델
+
+```
+/ai start [name]    # 새 세션 시작
+/ai load <name>     # 디스크 세션 로드
+/ai list            # ~/.geulos/ai-sessions/ 안 모든 세션
+```
+
+- 영속 history (`~/.geulos/ai-sessions/<name>.json`).
+- 매 송신 직후 *디스크 dump* (crash safety, ADR-031).
+- audit JSONL: `~/.geulos/logs/ai-chat/<session>-<ts>.jsonl` (ADR-038).
+
+## 6개 표준 도구
+
+| 도구 | 역할 |
+|---|---|
+| `list_objects_by_type(type_uri)` | 타입별 객체 목록 + id/name/path 인라인 |
+| `get_object(object_id, fields?)` | 객체 상세 (props/state/methods/acl). `fields`로 응답 슬림 |
+| `invoke_method(target, method, args)` | 메서드 호출. **read/mutation은 결과 state inline 반환** |
+| `subscribe(target, kinds)` | 이벤트 구독 |
+| `drain(subscription_id)` | 누적 이벤트 수신 |
+| `report_done(summary)` | 세션 종료 (≤2 문장 요약) |
+
++ `ShellRunner.run` / `run_streamed` (호스트 명령 — [별도 절](/geulos/shell-runner))
+
+## 효율 — ADR-041 (M11.2, 2026-05-30)
+
+audit JSONL stderr mirror로 측정 후 5종 최적화:
+
+### A. invoke 응답에 state inline
+`File.read` / `Filesystem.read_external` 같은 read-only invoke의 결과를 응답 `state`에
+포함. AI가 별도 `get_object` 폴링 turn을 안 써도 됨.
+
+### B. `get_object`에 `fields` 필터
+`fields: ["state"]`만 받으면 acl/methods/owner/parent/props 등 무거운 메타 제외. 응답
+크기 ~70% 절감.
+
+### C. Anthropic prompt caching
+`system_prompt`(~5KB) + tool 정의에 `cache_control: {type: "ephemeral"}` 마커. 5-min
+TTL. 첫 호출은 1.25x cache_creation, 후속 호출은 0.1x cache_read — 매 turn 약 6KB
+캐시 hit.
+
+### D. system_prompt 강화
+- 호스트 드라이브 경로에서는 `Filesystem@1`만 단독 list (`File@1`/`Folder@1` 병렬 호출 금지).
+- mutation 응답의 state 신뢰 (재확인 X).
+- mutation 응답은 한 문장 (read는 풍부 OK).
+- dev server는 *무조건* `run_streamed` (run으로 호출 시 90s timeout 사망).
+
+### E. report_done 길이 강제
+"≤2 sentences, ~30 words" 명시. 본문은 이미 `ai_text`에 있음.
+
+## 측정 — README 요약 시나리오
+
+| 단계 | Turn | Latency | Final 응답 | Summary | cache_read |
+|---|---|---|---|---|---|
+| Baseline | 4 | 32.2s | 2651자 | 250자 | 0 |
+| A+B+C+D+E 적용 후 | **3** | **23.6s** | **1869자** | **66자** | **6638** 매 turn |
+
+**절감**: turn -25%, latency -27%, final -30%, summary -74%, input billing ~85%↓.
+
+## Mutation 효율 — 후속
+
+mutation 계열(`save`, `delete`, `rename`, `create_file`, `create_folder`, `write_external`, `delete_external`, `rename_external`)에도 동일 패턴 확장:
+
+- invoke 후 2초 polling으로 *target state* 변화 감지 → `status: "completed"` + state inline.
+- 2초 timeout → `status: "awaiting_user"` (사용자 dialog 미응답 — AI가 후속 turn에서 재확인).
+- `create_*`은 parent children diff로 `new_child_id` 식별.
+
+자세한 spec: [docs/specs/2026-05-30-geulos-ai-mutation-efficiency.md](https://github.com/wwoosshh/geul_OS/blob/main/docs/specs/2026-05-30-geulos-ai-mutation-efficiency.md)
+
+## 관련 자료
+
+- [`docs/adr/041-ai-chat-efficiency.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/adr/041-ai-chat-efficiency.md) — 효율 5종 결정 + 측정.
+- [`ai-bridge/src/system_prompt.md`](https://github.com/wwoosshh/geul_OS/blob/main/ai-bridge/src/system_prompt.md) — AI에 주는 GeulOS 사용 가이드.

@@ -1,0 +1,53 @@
+# 응용 분야별 분류
+
+같은 임베디드/실시간 OS도 *어떤 산업/기기에 들어가느냐*에 따라 시장 동향과 요구사항이
+크게 달라진다. 자동차·IoT·게임 콘솔이 대표적인 큰 시장이다.
+
+## 자동차 OS
+
+2024년 자동차 OS 시장 약 134억 달러, 2033년 460억 달러 (CAGR ~15%) 예상.
+
+- **Android Automotive OS (AAOS)** — 2026년 *신차 중급~고급 모델 90%* 사용 (Google). HVAC·내비게이션 통합.
+- **QNX** — 안전 임계 35~38% 점유. ADAS·계기판·제어. ISO 26262 ASIL-D 인증.
+- **Automotive Grade Linux (AGL)** — Linux Foundation 후원. 13.7% → 2026 23% 예상. Toyota·Mazda 등.
+- **AUTOSAR Adaptive** — 차량 ECU 표준 미들웨어.
+
+> 현대 차량은 **단일 OS가 아닌 멀티 OS** — 안전(QNX) + 인포테인먼트(Android/Linux) +
+> 자율주행(QNX/Linux) 도메인별 분리.
+
+## 사물인터넷 (IoT)
+
+저전력·저메모리(KB~MB)·무선 통신.
+
+- **Mbed OS** (Arm) — Cortex-M 마이크로컨트롤러. 클라우드 연결 API.
+- **Contiki-NG** — 저전력 무선(6LoWPAN), IPv6, MQTT.
+- **RIOT** — 오픈 커뮤니티, 8/16/32비트 폭넓게 지원.
+- **TinyOS** — 센서 네트워크 연구용 효시.
+- **Tizen** (삼성) — TV·웨어러블·가전.
+- **HarmonyOS** — 멀티 디바이스 분산.
+
+## 게임 콘솔
+
+| 콘솔 | OS | 기반 |
+|---|---|---|
+| **PlayStation 4/5** | Orbis OS | FreeBSD |
+| **Xbox One/Series** | Xbox OS | Windows NT (Hyper-V로 게임 환경 가상화) |
+| **Nintendo Switch / Switch 2** | Horizon OS | FreeBSD 커널 코드 + Android Stagefright 멀티미디어 |
+| **Steam Deck** | SteamOS 3 | Arch Linux |
+
+## 항공·우주·방산 (Mission-Critical)
+
+- **VxWorks** — NASA 화성 탐사선 (Spirit, Opportunity, Perseverance), 보잉 787.
+- **INTEGRITY-178B** — 미 공군 F-35 전투기.
+- **RTEMS** (Real-Time Executive for Multiprocessor Systems) — NASA 위성.
+
+## 의료
+
+- **VxWorks / QNX** — MRI·CT 스캐너·인공호흡기·수술 로봇 (FDA Class III 인증).
+- **Linux** (Yocto/Buildroot) — 비실시간 의료기기 UI.
+
+## 네트워크 장비
+
+- **Cisco IOS / IOS XR / NX-OS** — 라우터·스위치.
+- **Junos OS** (Juniper) — FreeBSD 기반.
+- **Arista EOS** — Linux 기반.

@@ -1,0 +1,50 @@
+# GeulOS — AI-네이티브 OS 참조 구현
+
+> *사용자에게는 GUI, AI에게는 CLI.* 모든 상호작용 요소가 1급 객체이고 모든 동작이
+> 이벤트인 — *시간 여행이 OS에 1급 기능으로 박힌* 작업 환경.
+
+GeulOS는 Windows를 *대체하지 않는다*. Windows 위의 VM 게스트로 동작 — 사용자는 두 환경(Windows 호스트 + GeulOS VM)을 자유롭게 전환하며 기존 워크플로를 *포기하지 않고* AI-네이티브 도구를 쓴다.
+
+**리포지토리**: [github.com/wwoosshh/geul_OS](https://github.com/wwoosshh/geul_OS) · MIT or Apache-2.0
+
+## 무엇이 다른가 (한 줄씩)
+
+1. **풀 OS 대체** — PID 1을 GeulOS가 점유. 프레임워크가 아니라 OS.
+2. **단일 라이터 이벤트 루프** — 모든 동작(클릭/AI 호출/앱 변경)이 직렬화된 이벤트 로그. *공짜로 따라오는 것*: 매크로 녹화·리플레이·undo/redo가 OS 1급 기능. Apple App Intents도 MCP도 이걸 못 한다.
+3. **사용자 클릭 ≡ AI 호출** — 마우스 입력과 외부 AI의 호출이 *동일한 이벤트 파이프라인*을 통과. 같은 결과, 같은 권한 검사, 같은 감사 로그. **어디서도 본 적 없는 대칭성.**
+4. **AI-agnostic, 로컬 LLM 1급 지원** — Claude/GPT(클라우드), Ollama(호스트), VM 내부 LLM, 브라우저 오케스트레이션 UI — 네 토폴로지 모두 지원. AI는 GeulOS에 *결합되지 않음*.
+
+## 핵심 아이디어 — 문제 정의
+
+OpenClaw 류의 AI 자동화가 비효율적인 이유는 AI를 *고려하지 않은 시대의 환경* 위에서
+사람의 행동을 모방하기 위해 픽셀 좌표 계산·스크린샷 검증을 매 단계마다 반복하기
+때문이다. 의미(semantic) → 픽셀(pixel) → 의미 재구성의 *왕복*이 시간·토큰·오류율의
+주범이다.
+
+GeulOS는 이 왕복을 *원천 차단*한다 — UI의 모든 요소가 객체 ID로 식별되고, AI는
+좌표가 아닌 의미로 시스템과 대화한다.
+
+> **비유:** *시각장애인에게 옆에서 말로 설명하기 (기존)* vs *점자로 된 정식 설명서를
+> 손에 쥐어주기 (GeulOS)*
+
+## 다른 AI/OS 통합과의 비교
+
+| 측면 | GeulOS | AIOS (Rutgers) | MCP (Anthropic) | App Intents (Apple) |
+|---|---|---|---|---|
+| 형태 | 풀 OS 대체 (PID 1) | LLM-as-kernel 미들웨어 | AI ↔ 도구 통신 표준 | iOS 앱 액션 매니페스트 |
+| 단일 객체 트리 | ✅ | ❌ | ❌ (앱별 파편화) | ❌ (앱별) |
+| 사용자 클릭 = AI 호출 | ✅ (동일 파이프라인) | ❌ | ❌ | ❌ |
+| 매크로/undo OS 1급 | ✅ | ❌ | ❌ | ❌ |
+| AI-agnostic | ✅ (Claude/GPT/Ollama/…) | LLM 종속 | ✅ | iOS 종속 |
+| 시장 점유 의도 | ❌ (참조 구현 자리) | 학계 | 광범위 | 거대 |
+
+GeulOS는 시장 점유 경쟁 안 한다 — *AI-네이티브 OS 아키텍처의 정답을 가장 먼저,
+가장 명확하게 보여준 참조 구현* 자리를 노린다.
+
+## 이어지는 절
+
+- [아키텍처 4층](/geulos/architecture) — AI 클라이언트 ↔ GeulOS 코어 ↔ Linux 커널 ↔ 하이퍼바이저
+- [마일스톤 진행](/geulos/milestones) — M0 ~ M13 진척 현황 (2026-05-31 기준)
+- [Host Bridge](/geulos/host-bridge) — VM이 호스트 파일/명령에 접근하는 통로
+- [AI 통합](/geulos/ai-integration) — Claude + 6 도구 + ADR-041 효율
+- [ShellRunner](/geulos/shell-runner) — npm/cargo/git 등 명령 실행

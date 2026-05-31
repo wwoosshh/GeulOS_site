@@ -1,0 +1,66 @@
+# Host Bridge — 호스트 통합
+
+VM이 호스트의 작업 환경(C:\, D:\ 등 파일 + Node/Cargo/Git 등 도구)을 *그대로* 쓸 수
+있어야 작업용 OS로 의미가 있다. **Host Bridge**가 그 통로다.
+
+## 무엇을 하는가
+
+### 1. 호스트 파일 접근
+
+`C:\AiOS\README.md` 같은 경로를 *mount된 객체 트리*처럼 lazy mount.
+사용자도 AI도 같은 `File@1.read` / `Folder@1.create_file` 메서드로 조작.
+
+```json
+{"kind":"invoke", "target":"<file_id>", "method":"read", "args":{}}
+```
+
+### 2. 호스트 명령 실행
+
+`ShellRunner@1.run("npm install")` 또는 `run_streamed("npm run dev")`. VM rootfs는
+minimal Alpine, 실제 binary는 호스트 측 Node/Cargo 등.
+
+자세히는 [ShellRunner](/geulos/shell-runner) 절에서.
+
+## 보안 모델 (v1.5, 2026-05-30)
+
+VM에서 호스트로의 신뢰 경계는 가장 위험한 부분이다. 다음 4중 방어:
+
+| 계층 | 방어 |
+|---|---|
+| **인증** | per-launch 32-hex 토큰. `boot/qemu/launch.ps1`가 난수 생성 → `geulos.bridge_token=...` 커널 cmdline + `GEULOS_BRIDGE_TOKEN` 환경변수 동시. geulos-init이 `/run/geulos/bridge.token`(0o600)에 저장. host bridge 서버의 첫 프레임 Auth로 검증, **fail-closed**. |
+| **경로 검증** | `std::fs::canonicalize` + base-dir allowlist. `..`, NUL, separator 거부. symlink TOCTOU 방어 (`reject_existing_symlink` + `post_op_verify`). |
+| **명령 화이트리스트** | `git/npm/yarn/pnpm/npx/cargo/rustc/docker/node/python/pip` 만 허용. desktop-shell + host bridge 양쪽에서 (defense in depth). |
+| **사용자 동의** | 모든 mutation은 Dialog 호출 → 사용자 [허용] 후에만 실제 fs op. cwd 안 폴더는 첫 동의 후 그 dir 안 후속 mutation 자동 통과 (granted_dirs). cwd 밖은 매 호출 confirm. |
+
+## 프로토콜
+
+| Request | Response | 용도 |
+|---|---|---|
+| `Auth { token }` | `Auth { ok }` | 첫 프레임 인증 |
+| `ListDrives` | `Drives { drives }` | C:\, D:\ 등 |
+| `ListDir { path }` | `Entries { entries }` | 디렉터리 자식 |
+| `Stat { path }` | `Stat { stat }` | 파일/폴더 정보 |
+| `ReadFile { path, max_bytes }` | `File { content_base64, truncated }` | 파일 읽기 |
+| `WriteFile { path, content_base64 }` | `Ok` | 파일 쓰기 |
+| `CreateDir { path }` | `Ok` | 폴더 생성 |
+| `Remove { path, recursive }` | `Ok` | 삭제 |
+| `Rename { from, to }` | `Ok` | 이름 변경 |
+| `Exec { cmd, args, cwd, timeout_ms }` | `ExecResult { exit_code, stdout, stderr, duration_ms }` | one-shot 명령 (ShellRunner.run) |
+| `ExecStreamStart { cmd, args, cwd }` | `ExecStreamStarted { stream_id, pid }` | long-running (ShellRunner.run_streamed) |
+| `ExecStreamPoll { stream_id }` | `ExecStreamChunk { lines, status }` | 누적 line + 상태 polling |
+| `ExecStreamKill { stream_id }` | `Ok` | taskkill /F /T로 손주까지 cascade |
+
+## 네트워크 토폴로지
+
+- VM(QEMU): 10.0.2.15/24
+- 호스트(QEMU slirp gateway): 10.0.2.2
+- host bridge bind: 127.0.0.1:5560 (호스트)
+- VM → host bridge: 10.0.2.2:5560 (slirp NAT)
+- 외부 노출 없음 (loopback only)
+
+## 관련 ADR/Spec
+
+- [`docs/adr/036-object-native-filesystem.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/adr/036-object-native-filesystem.md) — Object-native filesystem 결정
+- [`docs/specs/2026-05-29-geulos-host-bridge.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/specs/2026-05-29-geulos-host-bridge.md) — v1 spec (읽기)
+- [`docs/specs/2026-05-30-geulos-host-bridge-write.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/specs/2026-05-30-geulos-host-bridge-write.md) — v1.5 spec (인증 + 쓰기)
+- KI-028 (closed, v1.5) — [known-issues.md](https://github.com/wwoosshh/geul_OS/blob/main/docs/known-issues.md)

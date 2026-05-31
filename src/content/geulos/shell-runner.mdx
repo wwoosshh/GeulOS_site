@@ -1,0 +1,91 @@
+# ShellRunner — 명령 실행
+
+AI/사용자가 *화이트리스트 binary*를 Dialog 동의 후 실행할 수 있는 escape hatch.
+[Host Bridge](/geulos/host-bridge)를 통해 *호스트 Windows*에서 spawn — VM rootfs는
+minimal Alpine이라 npm/cargo 등이 없다.
+
+## 두 가지 모드
+
+### `run(cmd, args, cwd, timeout_ms)` — 명백히 끝나는 명령
+- `npm install`, `cargo build`, `git commit`, `npm test` 등.
+- 90초 polling으로 inline 결과 반환 — AI가 한 turn에 결과 인지.
+- `state.last_exit_code` / `last_stdout` / `last_stderr` / `last_duration_ms` 채워짐.
+
+### `run_streamed(cmd, args, cwd)` — long-running
+- `npm run dev`, `vite`, `cargo watch` 등 사용자가 닫을 때까지 살아있는 명령.
+- `ConsoleWindow@1` 객체 mount + 500ms polling으로 stdout/stderr line 실시간 stream.
+- 사용자가 *콘솔 창 [X]* 닫거나 AI가 `terminate` 호출 → `taskkill /F /T /PID <pid>`로 손주까지 cascade kill.
+
+## 화이트리스트 binary (props.allowed_binaries)
+
+```
+git, npm, yarn, pnpm, npx, cargo, rustc, docker, node, python, pip
+```
+
+확장은 *사용자만* (props.allowed_binaries SetState).
+
+## 흐름
+
+```
+사용자: "C:\AiOS에서 cargo --version"
+  ↓
+AI: list_objects_by_type("aios.builtin/ShellRunner@1")
+  ↓
+AI: invoke_method(<sr_id>, "run", {cmd:"cargo", args:["--version"], cwd:"C:\\AiOS", timeout_ms:120000})
+  ↓
+desktop-shell: Dialog mount "AI가 cargo --version 실행하려 합니다. 허용?"
+  ↓
+사용자 [허용]
+  ↓
+host bridge: spawn_with_fallback("cargo", ...)   ← Windows .cmd/.bat/.exe shim 시도
+  ↓
+호스트에서 cargo 실행 (또는 cargo.cmd)
+  ↓
+desktop-shell: state.last_exit_code=0, last_stdout="cargo 1.95.0 ..." SetState broadcast
+  ↓
+ai-bridge: invoke 응답에 state inline 포함 (M11.2 효율 패턴)
+  ↓
+AI: "cargo 1.95.0 입니다" 답변
+```
+
+## terminate 흐름 (run_streamed 종료)
+
+```
+사용자: "dev 서버 종료해줘"
+  ↓
+AI: invoke_method(<cw_id>, "terminate", {})
+  ↓
+desktop-shell: Dialog "AI가 '<title>' 종료 요청. 허용?"
+  ↓
+사용자 [허용]
+  ↓
+shellrunner_methods::kill_console_stream(cw_id)
+  ↓
+host_bridge_client::exec_stream_kill(stream_id)
+  ↓
+host bridge: taskkill /F /T /PID <pid>   ← npm.cmd → cmd → node.exe 손주까지 cascade
+  ↓
+ConsoleWindow status="terminated" SetState
+```
+
+## 사용 사례 — React 프로젝트 자동 생성
+
+```
+사용자: "D:\projects에 새 React 프로젝트 만들고 dev 서버 띄워줘"
+  ↓
+AI:
+  1. mkdir D:\projects\react_project1     (또는 npx create-vite로 한 번에)
+  2. run("npx", ["create-vite@latest", ".", "--template", "react"], cwd="D:\\projects\\react_project1")
+     → exit=0 1.6s   ✅
+  3. run("npm", ["install"], cwd="D:\\projects\\react_project1")
+     → exit=0 13.5s  ✅ (첫 회), 후속 캐시 시 1-2s
+  4. run_streamed("npm", ["run", "dev"], cwd="D:\\projects\\react_project1")
+     → ConsoleWindow 띄움, "Local: http://localhost:5173/" 출력 후 사용자에게 안내
+```
+
+## 관련 ADR/Spec
+
+- [`docs/specs/2026-05-26-geulos-m12-shellrunner.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/specs/2026-05-26-geulos-m12-shellrunner.md) — M12 spec.
+- [`docs/specs/2026-05-28-geulos-m13-console-window.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/specs/2026-05-28-geulos-m13-console-window.md) — M13 ConsoleWindow + run_streamed.
+- [`docs/adr/039-shellrunner-escape-hatch.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/adr/039-shellrunner-escape-hatch.md)
+- [`docs/adr/040-windows-jobobject-cascade-kill.md`](https://github.com/wwoosshh/geul_OS/blob/main/docs/adr/040-windows-jobobject-cascade-kill.md) — Windows JobObject (M13). M13 후속에서 host bridge `taskkill /T` routing으로 대체.

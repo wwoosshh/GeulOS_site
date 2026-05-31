@@ -1,0 +1,54 @@
+# 아키텍처 4층
+
+GeulOS는 *AI 클라이언트 → 글 AI I/O 드라이버 → GeulOS 코어 → Linux 커널 → 하이퍼바이저*
+네 층으로 구성된다.
+
+```
+AI 클라이언트  ──▶  글 AI I/O 드라이버  ──▶  GeulOS 코어  ──▶  Linux 커널  ──▶  하이퍼바이저
+   (외부)            (Rust + 글 VM)         (Rust, PID 1)     (보이지 않음)
+```
+
+## ① 외부 — AI 클라이언트
+
+Claude / GPT / 로컬 LLM (Ollama 등) 무엇이든. AI는 GeulOS에 *결합되지 않는다*. 와이어 프로토콜만 구사하면 된다.
+
+## ② 글 AI I/O 드라이버 (M5.5 연기)
+
+AI의 자연어 스크립트를 OS 동작으로 번역. Rust + [글 언어](https://github.com/wwoosshh/geul-lang) VM 임베드. **현재는 연기됨** — 글 언어 G1~G4 완료 후 재개. 그동안은 와이어 프로토콜 직통으로 충분.
+
+## ③ GeulOS 코어 (Rust, PID 1)
+
+- **객체 서버** (`core::ObjectServer`) — 모든 UI 요소를 *typed object*로 보유 (Folder@1, File@1, Window@1, ShellRunner@1, Filesystem@1 등).
+- **이벤트 버스** — 단일 라이터 모델로 모든 동작 직렬화. 매크로/undo/AI 호출 기록을 *공짜로* 가능하게 함.
+- **권한 매니저** (ACL) — actor(user:local / ai:* / app:*)별 메서드 허용 정책.
+- **컴포지터** — winit + softbuffer + fontdue (호스트), 또는 fbdev/DRM + evdev (VM 안).
+- **앱 런타임** — desktop-shell, echo-app 등 별 프로세스로 spawn.
+
+## ④ Linux 커널 + 하이퍼바이저
+
+- Alpine LTS 커널 6.12 + 추출된 모듈 (e1000, ext4, virtio-*).
+- 호스트: QEMU/KVM (WHPX on Windows). 사용자에게 GUI 창으로 보이는 게 게스트의 컴포지터 출력.
+
+## 와이어 프로토콜 — 표준 인터페이스
+
+길이 접두사 JSON 프레임 over TCP/Unix socket. 7개 메시지 타입:
+
+| 메시지 | 방향 | 역할 |
+|---|---|---|
+| `Hello` / `HelloAck` | client → server | actor 식별 + handshake |
+| `Mount` | client → server | 객체를 트리에 등록 |
+| `Invoke` | client → server | 객체 메서드 호출 |
+| `Subscribe` | client → server | 이벤트 구독 |
+| `Query` | client → server | 객체 검색 (by type / id) |
+| `Get` | client → server | 객체 상세 조회 |
+| `Event` | server → client | 발행된 이벤트 |
+
+이 프로토콜은 *AI나 사용자, 컴포지터, 외부 클라이언트 모두 동일하게* 사용한다.
+즉 외부 AI가 보낸 `Invoke`와 사용자가 마우스로 만든 `Invoke`가 같은 파이프라인에서
+같은 ACL 검사를 받는다.
+
+## 글 언어의 위치
+
+[글 언어](https://github.com/wwoosshh/geul-lang)는 한글 자연어 문법(SOV·조사 바인딩)으로 동작하는 별도 프로그래밍 언어 — **GeulOS의 *선택적 흐름 제어 레이어***이지 표준 인터페이스가 아니다. 표준은 *와이어 프로토콜*.
+
+글이 약해져도 OS는 살고, 글이 강해지면 OS도 강해지는 *디커플드 구조*.

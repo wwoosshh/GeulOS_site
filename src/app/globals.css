@@ -1,0 +1,68 @@
+/* === 글로벌 — Wikipedia/MDN 풍 정보 밀도 우선 === */
+
+/* 한국어 폰트 — Pretendard (시스템 fallback 풍부) */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+:root {
+  /* 액센트 — 차분한 인디고/슬레이트, AI 클리셰(violet/pink) 회피 */
+  --x-color-primary-50: 238 242 255;
+  --x-color-primary-100: 224 231 255;
+  --x-color-primary-200: 199 210 254;
+  --x-color-primary-300: 165 180 252;
+  --x-color-primary-400: 129 140 248;
+  --x-color-primary-500: 99 102 241;
+  --x-color-primary-600: 79 70 229;
+  --x-color-primary-700: 67 56 202;
+  --x-color-primary-800: 55 48 163;
+  --x-color-primary-900: 49 46 129;
+  --x-color-primary-950: 30 27 75;
+}
+
+html {
+  font-family:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif;
+  font-feature-settings: 'tnum', 'kern';
+  text-rendering: optimizeLegibility;
+}
+
+code, kbd, samp, pre {
+  font-family:
+    'JetBrains Mono', 'Cascadia Code', 'SF Mono', Consolas,
+    'Liberation Mono', Menlo, monospace;
+  font-size: 0.92em;
+}
+
+/* 본문 가독성 — 줄 간격 좀 더, 큰 화면에서 본문 최대 폭 약간 확장 */
+main article {
+  line-height: 1.75;
+}
+
+/* 표 정보 밀도 — 좁은 패딩 + 우측 정렬 숫자 */
+main article table {
+  font-size: 0.92rem;
+}
+main article th, main article td {
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* 시각 절제 — 카드/박스 둥글기 일관 최소 */
+.nextra-callout {
+  border-radius: 6px !important;
+}
+
+/* h2 위 구분 — 학술 풍 */
+main article h2 {
+  border-top: 1px solid rgb(var(--nextra-bg) / 0.05);
+  padding-top: 1.5rem;
+  margin-top: 2.5rem;
+}
+.dark main article h2 {
+  border-top-color: rgb(255 255 255 / 0.08);
+}
+
+/* 로고/네비 절제 — 미니멀 */
+.nextra-navbar-blur {
+  backdrop-filter: blur(8px);
+}

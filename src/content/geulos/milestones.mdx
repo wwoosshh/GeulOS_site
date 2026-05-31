@@ -1,0 +1,50 @@
+# 마일스톤 진행 현황 (2026-05-31)
+
+총 21개 주요 마일스톤 + 부속 작업 완료.
+
+| 마일스톤 | 상태 |
+|---|---|
+| M0 부트스트랩 (Stage1 → switch_root → Stage2) | ✅ |
+| M1 객체 서버 + 이벤트 버스 (single-writer) | ✅ |
+| M1.5 geulosh 검증 셸 | ✅ |
+| M2 와이어 프로토콜 (JSON over TCP) | ✅ |
+| M3 앱 런타임 + 권한 매니저 | ✅ |
+| M4 컴포지터 GUI (winit + softbuffer + fontdue) | ✅ |
+| M5 AI 어댑터 (Claude REST + ChatSession + audit JSONL) | ✅ |
+| M6 VM 부팅 통합 (Alpine + initrd + disk image) | ✅ |
+| M6.5 외부 AI ↔ VM (사용자=AI 동일 명령표면) | ✅ |
+| M7 도그푸딩 — Window editor + 한글 IME + selection | ✅ |
+| M8 File@1 viewer + ConsoleWindow streaming | ✅ |
+| M9 Window edit_mode + Ctrl+S save | ✅ |
+| M10 fs object mutations (create/delete/rename) | ✅ |
+| M10 P3 Filesystem@1 escape hatch (read/write/delete/rename_external) | ✅ |
+| M11 ACL hardening (granted_dirs, dialog confirm) | ✅ |
+| M11.1 async AI + JSONL audit log | ✅ |
+| M11.2 AI 대화 효율 (ADR-041: inline result, fields filter, prompt caching) | ✅ |
+| M12 ShellRunner@1 (allowed binaries: git/npm/cargo/...) | ✅ |
+| M13 host bridge process spawn (Windows taskkill /T cascade) | ✅ |
+| **VM compositor (fbdev/DRM in-VM display)** | ✅ |
+| **Host Bridge v1.5 (auth token, write/delete/rename, allowlist canonicalize)** | ✅ |
+
+## 주요 acceptance 시연
+
+### M6.5 (2026-05-18) — 4층 통신 증명
+외부 호스트의 Claude Sonnet 4.6이 forwarded TCP(5550) → QEMU/WHPX VM → 게스트의
+`geulosd` → `echo-app` 객체 트리를 **4층 모두 동시 작동 하에 발견·보고** 완료.
+설계 §0 *"사용자에게는 GUI, AI에게는 CLI"* 약속의 *기술적 증명*.
+
+### M13 (2026-05-31) — 호스트 명령 실행 end-to-end
+AI가 `npx create-vite@latest . --template react` + `npm install` + `npm run dev`를
+호스트에서 실행, ConsoleWindow로 stdout/stderr 실시간 stream, terminate 시
+`taskkill /F /T`로 node 손주 프로세스까지 cascade kill 검증.
+
+## 연기된 작업
+
+- **글 VM 임베드 (M5.5)** — [글 언어](https://github.com/wwoosshh/geul-lang)의 G1~G4 완료 후 재개.
+- **Phase D virtio-gpu** — in-VM 가속 디스플레이는 fbdev/DRM 백엔드로 사실상 대체.
+
+## 후속 계획 (M14+)
+
+- **M14**: typed Process Objects (NpmProject@1 / GitRepo@1 / CargoProject@1) — 현재 ShellRunner.run은 일반 명령 통로. project type별 메서드(npm.install, git.commit 등) 객체화.
+- **M15**: container 격리 환경 (Docker / VM 안 VM).
+- AI 응답 streaming (Anthropic SSE) — 첫 토큰까지 1-3초 빨라짐.
