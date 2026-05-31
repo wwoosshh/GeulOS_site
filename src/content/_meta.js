@@ -4,12 +4,18 @@ export default {
     display: 'hidden',
     theme: {
       toc: false,
-      sidebar: false,
-      pagination: false
+      pagination: false,
+      breadcrumb: false
     }
   },
   classification: {
     title: '운영체제 분류'
+  },
+  concepts: {
+    title: 'OS 핵심 개념'
+  },
+  profiles: {
+    title: '주요 OS 심화'
   },
   geulos: {
     title: 'GeulOS 사례'

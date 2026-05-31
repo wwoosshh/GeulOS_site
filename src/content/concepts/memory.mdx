@@ -1,0 +1,38 @@
+# 메모리 · 가상 메모리
+
+OS가 한정된 RAM이라는 *공간 자원*을 나누는 방식.
+
+## 가상 메모리란
+
+[가상 메모리(virtual memory)](https://en.wikipedia.org/wiki/Virtual_memory)는 활성 RAM과
+디스크의 비활성 저장 공간을 묶어 *"아주 큰 주(主)기억장치가 있는 것 같은 착각"*을 만드는
+메모리 관리 기법이다. 프로그램이 쓰는 **가상 주소**를 실제 **물리 주소**로 매핑해, 물리
+RAM보다 많은 메모리를 쓸 수 있게 한다([Virtual memory, Wikipedia](https://en.wikipedia.org/wiki/Virtual_memory)).
+
+## 페이징과 페이지 테이블
+
+거의 모든 현대 가상 메모리 시스템은 주소 공간을 **고정 크기 페이지**(보통 4KB 이상)로
+나눈다. **페이지 테이블(page table)**이 가상 주소를 물리 주소로 변환하고, 각 항목은 해당
+페이지가 RAM에 있는지 디스크에 있는지 표시한다([Virtual memory, Wikipedia](https://en.wikipedia.org/wiki/Virtual_memory)).
+
+## MMU — 하드웨어 가속 변환
+
+**MMU(Memory Management Unit)**는 CPU 안의 전용 하드웨어로, 가상→물리 주소 변환을 자동으로
+수행한다. 덕분에 소프트웨어가 매번 변환을 처리할 필요가 없다([Virtual memory, Wikipedia](https://en.wikipedia.org/wiki/Virtual_memory)).
+
+## 페이지 폴트와 스와핑
+
+프로그램이 *메모리에 없는* 페이지를 접근하면 **페이지 폴트(page fault)** 예외가 발생하고,
+OS가 디스크에서 해당 페이지를 RAM으로 가져온다. 자리가 부족하면 덜 쓰인 페이지를 디스크로
+**스와핑(swapping)**하며, 이때 *LRU(least-recently-used)* 같은 교체 알고리즘을 쓴다
+([Virtual memory, Wikipedia](https://en.wikipedia.org/wiki/Virtual_memory)).
+
+## 무엇을 얻는가 — 격리
+
+각 [프로세스](/concepts/process)는 자기만의 격리된 주소 공간에서, 마치 메모리를 *독점*하는
+것처럼 동작한다. 이 격리가 **보안과 안정성**을 높이고, 프로그래머가 공유 메모리를 일일이
+관리하지 않아도 되게 한다([Virtual memory, Wikipedia](https://en.wikipedia.org/wiki/Virtual_memory)).
+
+> **분류와의 연결:** 가상 메모리·MMU는 1970년대 [제3세대 OS](/classification/era#제3세대-1965-1980--다중-프로그래밍시분할)에서
+> 자리잡은 현대 OS의 기초다. 반대로 [마이크로컨트롤러용 RTOS](/profiles/rtos-embedded)는
+> MMU가 없거나 메모리가 KB 단위라, 가상 메모리 없이 *물리 메모리 직접 관리*를 하는 경우가 많다.

@@ -1,0 +1,40 @@
+# Apple — Classic Mac에서 macOS·iOS까지
+
+Apple OS의 현대 계보에는 *외부에서 인수한 OS*가 핵심으로 자리 잡고 있다.
+
+## Classic Mac OS (1984~2001)
+
+[macOS](https://en.wikipedia.org/wiki/MacOS) 문서에 따르면 초대 Macintosh의 OS는
+**1984년부터 2001년까지** 주력으로 쓰인 *Classic Mac OS*다
+([macOS, Wikipedia](https://en.wikipedia.org/wiki/MacOS)). 상용 GUI를 대중화했지만,
+선점형 멀티태스킹·보호 메모리 같은 현대 커널 기능이 약했다.
+
+## NeXTSTEP 인수 → Mac OS X (2001)
+
+Apple을 떠난 Steve Jobs가 세운 NeXT는 **1989년부터 NeXTSTEP**을 개발했다. Apple이 NeXT를
+인수하면서 이 기술이 차세대 OS의 토대가 됐고, **Mac OS X가 2001년 3월 24일** 출시됐다
+([macOS, Wikipedia](https://en.wikipedia.org/wiki/MacOS)).
+
+Mac OS X는 *OPENSTEP for Mach + FreeBSD*에서 유래했다. 커널 **XNU**는 Mach 마이크로커널과
+[FreeBSD](/profiles/unix-bsd) 구성요소를 결합한 [하이브리드 구조](/classification/kernel)이며,
+오픈소스 기반인 **Darwin**이 그 핵심이다.
+
+## 공통 커널, 갈라지는 제품
+
+같은 Darwin/XNU 위에서 Apple의 모든 OS가 자란다.
+
+| OS | 첫 출시 | 비고 |
+|---|---|---|
+| **Classic Mac OS** | 1984 | ~2001 주력 |
+| **Mac OS X / macOS** | 2001-03-24 | NeXTSTEP·BSD 기반, XNU |
+| **iOS** | 2007-06-29 | iPhone과 함께 ([iOS](/profiles/mobile)) |
+| **iPadOS** | 2019 | iOS에서 분리 |
+
+> NeXTSTEP(1989), Mac OS X(2001-03-24)는 [macOS, Wikipedia](https://en.wikipedia.org/wiki/MacOS),
+> iOS(2007)·iPadOS(2019)는 [iOS, Wikipedia](https://en.wikipedia.org/wiki/IOS)에서 확인.
+
+## Apple Silicon 전환 (2020~)
+
+Apple은 **2020년 6월 22일 WWDC**에서 자체 ARM 프로세서(Apple Silicon) 전환을 발표했고,
+2020년 macOS Big Sur가 첫 ARM 지원 버전이 됐다([macOS, Wikipedia](https://en.wikipedia.org/wiki/MacOS)).
+이로써 Mac·iPhone·iPad가 같은 칩 아키텍처 + 같은 커널 계보로 수렴했다.

@@ -5,8 +5,6 @@ import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import './globals.css'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = {
   metadataBase: new URL('https://os-wiki.vercel.app'),
   title: {

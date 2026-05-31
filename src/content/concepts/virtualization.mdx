@@ -1,0 +1,53 @@
+# 가상화 · 컨테이너
+
+한 물리 기계 위에서 *여러 시스템*을 격리해 돌리는 기술. 클라우드의 토대다.
+
+## 하이퍼바이저 — 가상 머신을 돌리는 것
+
+[하이퍼바이저(hypervisor)](https://en.wikipedia.org/wiki/Hypervisor)는 *가상 머신(VM)을
+만들고 실행*하는 소프트웨어/펌웨어/하드웨어다. 호스트 기계 위에서 게스트 OS들을 관리하며
+각각에 가상 플랫폼을 제공한다([Hypervisor, Wikipedia](https://en.wikipedia.org/wiki/Hypervisor)).
+
+분류는 **Robert P. Goldberg가 1973년 논문**에서 정립했다([Hypervisor, Wikipedia](https://en.wikipedia.org/wiki/Hypervisor)):
+
+| 유형 | 위치 | 예시 |
+|---|---|---|
+| **Type 1 (베어메탈)** | 하드웨어 위에서 직접 | Hyper-V, Xen, VMware ESXi |
+| **Type 2 (호스티드)** | 일반 OS 위의 프로그램 | VirtualBox, VMware Workstation |
+
+> 용어 "hypervisor" 자체는 1970년경 IBM이 System/360-65에서 동시 OS 인스턴스를 관리하는
+> 소프트웨어에 붙인 말이고, 최초의 하이퍼바이저도 **IBM이 1960년대**에 만들었다
+> ([Hypervisor, Wikipedia](https://en.wikipedia.org/wiki/Hypervisor)). 경계가 늘 뚜렷한
+> 건 아니어서, KVM·bhyve는 기술적으로 커널 모듈이지만 사실상 호스트 OS를 Type-1으로 바꾼다.
+
+## 컨테이너 — 커널을 공유하는 가상화
+
+[OS 수준 가상화(OS-level virtualization)](https://en.wikipedia.org/wiki/OS-level_virtualization)는
+*하나의 커널*이 여러 격리된 사용자 공간 인스턴스(**컨테이너**)를 띄우게 한다. VM이 별도
+커널까지 통째로 흉내 내는 것과 달리, 컨테이너는 **호스트 커널을 공유**한다. 그래서 *전체
+가상화보다 오버헤드가 적다* — 일반 시스템 콜 인터페이스를 그대로 쓰고 에뮬레이션이 없기
+때문이다([OS-level virtualization, Wikipedia](https://en.wikipedia.org/wiki/OS-level_virtualization)).
+
+Linux 컨테이너는 두 커널 기능에 의존한다([OS-level virtualization, Wikipedia](https://en.wikipedia.org/wiki/OS-level_virtualization)):
+
+- **네임스페이스(namespaces)** — 격리(프로세스·네트워크·파일시스템 뷰 분리).
+- **cgroups** — 자원 제한(CPU·메모리 할당).
+
+대표 구현: **Docker(2013), LXC(2008), Podman(2018), OpenVZ(2005)**
+([OS-level virtualization, Wikipedia](https://en.wikipedia.org/wiki/OS-level_virtualization)).
+
+## VM vs 컨테이너 한눈
+
+| | 가상 머신 (하이퍼바이저) | 컨테이너 (OS 수준) |
+|---|---|---|
+| 커널 | 게스트마다 별도 | 호스트와 **공유** |
+| 격리 강도 | 강 | 상대적으로 약 |
+| 오버헤드 | 큼 | 작음 |
+| 부팅 | 초~분 | 거의 즉시 |
+
+## 분류와의 연결
+
+이 기술이 [제6세대 OS](/classification/era#제6세대-2007-현재--모바일클라우드ai)의 *클라우드·
+컨테이너 OS*(Container Linux, Bottlerocket 등)를 낳았다. 흥미롭게도 [GeulOS 사례](/geulos)는
+*반대 방향* — 가상화를 격리가 아니라 "AI가 호스트를 안전하게 다루는 통로"로 쓴다
+([Host Bridge](/geulos/host-bridge) 참조).

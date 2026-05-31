@@ -1,0 +1,28 @@
+# OS 핵심 개념 — 무엇을 관리하는가
+
+[분류](/classification)가 OS를 *바깥에서* 나눈다면, 이 섹션은 OS가 *안에서* 실제로
+하는 일을 본다. 어떤 OS든 — 데스크탑이든 RTOS든 — 다음 네 가지 자원을 관리한다는
+점은 같다.
+
+| 자원 | 핵심 질문 | 페이지 |
+|---|---|---|
+| **CPU(시간)** | 누가, 언제, 얼마나 실행하나? | [프로세스 · 스케줄링](/concepts/process) |
+| **메모리(공간)** | 한정된 RAM을 어떻게 나눠 쓰나? | [메모리 · 가상 메모리](/concepts/memory) |
+| **저장장치** | 데이터를 어떻게 영구 보관·구조화하나? | [파일 시스템 · I/O](/concepts/filesystem) |
+| **격리·다중화** | 한 기계에서 여러 시스템을 어떻게 나누나? | [가상화 · 컨테이너](/concepts/virtualization) |
+
+## OS의 정의 다시 보기
+
+운영체제는 **하드웨어와 응용 사이의 중간 계층**으로, 자원을 관리하고 응용에 표준
+인터페이스를 제공한다. 이때 핵심 코드가 [커널](/classification/kernel)이며, 커널 설계
+방식(모놀리식·마이크로 등)에 따라 위 자원 관리의 *구현*이 달라진다.
+
+이 섹션의 개념은 [Operating system, Wikipedia](https://en.wikipedia.org/wiki/Operating_system)와
+각 주제별 문서로 교차 확인했다. 구체 OS의 사례는 [주요 OS 심화](/profiles)에서 본다.
+
+## 왜 분류 전에 개념인가
+
+예를 들어 [실시간 OS](/classification/usage#실시간-os-rtos)가 "데드라인을 보장한다"는
+말은, [스케줄링](/concepts/process) 개념을 알아야 의미가 잡힌다. 마찬가지로 *컨테이너
+OS*는 [가상화](/concepts/virtualization)를, *임베디드 OS*는 [메모리 관리](/concepts/memory)의
+제약을 알아야 한다. 개념이 분류의 *언어*다.

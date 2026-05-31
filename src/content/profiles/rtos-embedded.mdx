@@ -1,0 +1,50 @@
+# RTOS · 임베디드 OS
+
+데스크탑·서버에서는 안 보이지만 *수백억 대의 기기* 안에서 돌아가는 OS들. 공통 요구는
+*작은 메모리·저전력·예측 가능한(deterministic) 응답*이다. RTOS의 개념적 배경은
+[실시간 OS](/concepts/process#실시간-스케줄링)와 [용도별 분류](/classification/usage#실시간-os-rtos)에서 다룬다.
+
+## VxWorks — 항공·우주의 표준 (1987)
+
+[VxWorks](https://en.wikipedia.org/wiki/VxWorks)는 **Wind River**가 **1987년** 출시한 RTOS다.
+결정론적 성능으로 *우주·항공*에서 폭넓게 쓰인다 — **NASA의 화성 탐사선(Sojourner, Spirit,
+Opportunity, Curiosity, Mars 2020)**, James Webb 우주망원경, **보잉 787, 에어버스 A400M** 등
+([VxWorks, Wikipedia](https://en.wikipedia.org/wiki/VxWorks)).
+
+## QNX — 차량의 마이크로커널 (1982)
+
+[QNX](https://en.wikipedia.org/wiki/QNX)는 1980년 설립된 Quantum Software Systems(현
+**BlackBerry**)가 **1982년** Intel 8088용으로 처음 내놓은 *Unix-like 실시간 OS*다. 핵심은
+[마이크로커널](/classification/kernel) 설계로, 대부분의 커널 기능을 작은 사용자 공간
+태스크(Resource Manager)로 분리한다. **2025년 12월 기준 2억 7,500만 대 이상의 차량**에 탑재돼
+있으며, 의료기기(IEC 62304 Class C)에도 인증돼 쓰인다([QNX, Wikipedia](https://en.wikipedia.org/wiki/QNX)).
+
+## FreeRTOS — 마이크로컨트롤러의 오픈 RTOS (2003)
+
+[FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS)는 **Richard Barry가 2003년** 개발한
+임베디드 커널로, **MIT 라이선스**다. 40종 이상의 마이크로컨트롤러로 이식됐고, **2017년
+스튜어드십이 Amazon Web Services(AWS)로 이관**됐다([FreeRTOS, Wikipedia](https://en.wikipedia.org/wiki/FreeRTOS)).
+
+## Zephyr — Linux Foundation의 IoT RTOS (2016)
+
+[Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system))는 **Linux Foundation**이
+주관하는 RTOS로, **2016년 7월 26일** 첫 배포(2월 프로젝트 발족), **Apache 2.0** 라이선스다.
+*연결된, 자원이 제한된* IoT·임베디드 기기를 겨냥한다([Zephyr, Wikipedia](https://en.wikipedia.org/wiki/Zephyr_(operating_system))).
+
+## seL4 — 수학적으로 증명된 마이크로커널
+
+[seL4](https://en.wikipedia.org/wiki/SeL4)는 *형식 검증(formal verification)*으로 유명하다.
+**2009년** 형식 명세부터 C 구현까지 기계 검증된 *기능적 정확성 증명*을 보고했다 — 약
+10,000줄 C 코드로 당시 최대 규모의 형식 검증 소프트웨어. 개발은 호주 **NICTA**(이후 Data61)가
+주도했고, 2014년 오픈소스로 공개됐다([seL4, Wikipedia](https://en.wikipedia.org/wiki/SeL4)).
+방산·보안 임계 영역에서 채택된다.
+
+## 한눈 비교
+
+| OS | 첫 등장 | 개발 | 구조 | 라이선스 | 대표 영역 |
+|---|---|---|---|---|---|
+| VxWorks | 1987 | Wind River | 모놀리식 | 상용 | 항공·우주·방산 |
+| QNX | 1982 | BlackBerry | 마이크로커널 | 상용 | 자동차·의료 |
+| FreeRTOS | 2003 | Richard Barry → AWS | 소형 커널 | MIT | MCU·IoT |
+| Zephyr | 2016 | Linux Foundation | 소형 커널 | Apache 2.0 | IoT |
+| seL4 | 2009(증명) | NICTA/Data61 | 마이크로커널 | GPLv2 | 방산·연구 |

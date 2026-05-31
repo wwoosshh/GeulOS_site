@@ -6,10 +6,21 @@
 
 | 라이선스 | 특징 | 대표 OS |
 |---|---|---|
-| **GPL 계열** | 파생 작품도 같은 라이선스로 공개해야 (copyleft) | Linux 커널, 대부분 GNU 도구 |
-| **BSD/MIT 계열** | 사용·수정·재배포 자유, 상용 클로즈드도 가능 | FreeBSD, OpenBSD, NetBSD, Darwin |
-| **Apache 2.0** | BSD-like + 특허 명시 | Android(AOSP 일부), Zephyr |
+| **GPL 계열** | 파생 작품도 같은 라이선스로 공개해야 (강한 copyleft) | Linux 커널, 대부분 GNU 도구 |
+| **LGPL** | *약한 copyleft* — 라이브러리를 어떤 라이선스 프로그램과도 링크 가능, 직접 수정분만 공개 | glibc 등 라이브러리 |
+| **MPL** | *약한 copyleft* — 변경한 *파일* 단위로만 공개 의무 | Mozilla 계열 |
+| **BSD/MIT 계열** | 사용·수정·재배포 자유, 상용 클로즈드도 가능 (permissive) | FreeBSD, OpenBSD, NetBSD, Darwin |
+| **Apache 2.0** | permissive + 특허 명시 | Android(AOSP 일부), Zephyr |
 | **이중 라이선스** | 상황별 두 라이선스 중 선택 | Qt, MySQL |
+
+**카피레프트 강도** — 같은 "오픈소스"라도 의무의 범위가 다르다
+([Copyleft, Wikipedia](https://en.wikipedia.org/wiki/Copyleft)):
+
+- **강한 copyleft (GPL)** — 파생물 *전체*가 같은 라이선스를 상속해야 한다.
+- **약한 copyleft (LGPL/MPL)** — LGPL은 *라이브러리를 링크*하는 프로그램은 재라이선스 없이
+  허용하고 직접 수정분만 공개; MPL은 *변경한 파일* 단위로만 의무를 진다.
+- **퍼미시브 (BSD/MIT/Apache)** — 같은 자유를 주되, 파생물을 *상용 클로즈드로 재라이선스*하는
+  것까지 허용한다. 그래서 [BSD 코드가 macOS·PlayStation](/profiles/unix-bsd)에 들어갈 수 있었다.
 
 ## 상용 (proprietary)
 

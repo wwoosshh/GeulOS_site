@@ -1,0 +1,66 @@
+# 프로세스 · 스케줄링
+
+OS가 CPU라는 *시간 자원*을 나누는 방식.
+
+## 프로세스란
+
+[프로세스(process)](https://en.wikipedia.org/wiki/Process_(computing))는 *실행 중인
+프로그램의 인스턴스*다. 디스크에 저장된 수동적인 코드(프로그램)와 달리, 프로세스는
+메모리에 올라가 자원을 할당받고 실제로 도는 상태다([Process, Wikipedia](https://en.wikipedia.org/wiki/Process_(computing))).
+
+각 프로세스는 자기만의 것을 갖는다 — 실행 코드, 가상 메모리(콜 스택·힙), 파일
+디스크립터, 보안 속성, 그리고 레지스터 등 프로세서 상태.
+
+### 프로세스 vs 스레드
+
+핵심 차이: **스레드(thread)는 프로세스 *안에* 있고 그 주소 공간을 공유**하는 반면,
+**프로세스는 각자 격리된 메모리 환경**을 갖는다. 한 프로세스가 여러 스레드를 두고
+동시에 실행할 수 있다([Process, Wikipedia](https://en.wikipedia.org/wiki/Process_(computing))).
+
+### 프로세스 상태
+
+OS는 프로세스를 여러 상태로 관리한다([Process, Wikipedia](https://en.wikipedia.org/wiki/Process_(computing))):
+
+1. **생성/대기(ready)** — 메모리에 올라와 스케줄러를 기다림
+2. **실행(running)** — 프로세서에서 실제 수행 중
+3. **블록(blocked)** — I/O·입력 등 자원을 기다리며 멈춤
+4. **종료(terminated)** — 실행 끝, 메모리에서 제거 대기
+
+## 스케줄링
+
+CPU는 하나(또는 몇 개)인데 프로세스는 여럿이다. [스케줄링(scheduling)](https://en.wikipedia.org/wiki/Scheduling_(computing))은
+*어떤 작업에 자원을 언제 줄지* 정하는 일이다([Scheduling, Wikipedia](https://en.wikipedia.org/wiki/Scheduling_(computing))).
+
+### 선점 vs 비선점
+
+- **선점형(preemptive)** — 스케줄러가 실행 중인 프로세스를 *강제로* CPU에서 내릴 수 있다.
+- **비선점형(협조형, cooperative)** — 강제하지 못하고, 프로세스가 *자발적으로* CPU를
+  놓을 때까지 기다린다.
+
+([Scheduling, Wikipedia](https://en.wikipedia.org/wiki/Scheduling_(computing)))
+
+### 대표 알고리즘
+
+| 알고리즘 | 방식 | 특징 |
+|---|---|---|
+| **FCFS** (선입선출) | 도착 순서대로 큐 | 단순, 단 *convoy effect*(긴 작업이 뒤를 막음) |
+| **Shortest Job First** | 남은 처리시간 짧은 것 먼저 | 평균 대기 최소화 |
+| **Round-Robin** | 고정 시간 단위로 순환 | 공정성 + 응답성 균형 |
+| **Priority** | 우선순위 순 | 높은 우선순위가 선점 |
+| **Multilevel Feedback Queue** | 여러 큐 조합 | 위 방식들을 우선순위 큐로 결합 |
+
+(출처: [Scheduling, Wikipedia](https://en.wikipedia.org/wiki/Scheduling_(computing)))
+
+### 컨텍스트 스위치
+
+프로세스를 바꿀 때 OS는 (1) 현재 프로세스 상태 저장, (2) 모드 전환, (3) 다음 프로세스로
+점프하는 **컨텍스트 스위치(context switch)**를 한다. 여기 드는 시간을 *dispatch latency*라
+부른다([Scheduling, Wikipedia](https://en.wikipedia.org/wiki/Scheduling_(computing))).
+
+## 실시간 스케줄링
+
+[RTOS](/profiles/rtos-embedded)가 "데드라인을 보장한다"는 말은 곧 *스케줄링이
+결정론적(deterministic)*이라는 뜻이다. 작업이 정해진 시간 안에 반드시 실행되도록
+우선순위 기반 선점 스케줄링을 쓰며, 이 보장의 강도에 따라 **Hard RTOS**(미수성=실패,
+예: 항공기 제어)와 **Soft RTOS**(미수성=품질 저하, 예: 스트리밍)로 나뉜다. 자세한 사례는
+[용도별 분류의 실시간 OS](/classification/usage#실시간-os-rtos) 참조.

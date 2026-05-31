@@ -1,0 +1,44 @@
+# 파일 시스템 · I/O
+
+OS가 *저장장치*의 데이터를 영구 보관하고 구조화하는 방식.
+
+## 파일 시스템이 하는 일
+
+[파일 시스템(file system)](https://en.wikipedia.org/wiki/File_system)은 컴퓨터가 데이터를
+조직·접근하는 규칙으로, *파일 조직과 접근을 관장*하고 응용이 대용량 저장장치를 공유하게
+한다([File system, Wikipedia](https://en.wikipedia.org/wiki/File_system)). 주요 역할:
+
+- **조직** — 파일을 디렉터리(폴더)에 담고, 계층적으로 중첩.
+- **메타데이터 관리** — 이름·크기·생성/수정 시각·소유자·접근 권한 저장.
+- **공간 할당** — 어떤 저장 영역이 어떤 파일에 속하고 어디가 비었는지 추적.
+- **접근 제어** — 권한으로 무단 읽기/수정 방지.
+
+(출처: [File system, Wikipedia](https://en.wikipedia.org/wiki/File_system))
+
+## 대표 파일 시스템
+
+OS마다 기본 파일 시스템이 다르다([File system, Wikipedia](https://en.wikipedia.org/wiki/File_system)):
+
+| 계열 | 파일 시스템 | 비고 |
+|---|---|---|
+| **Windows** | FAT(FAT12/16/32) | 오래됐고 호환성 넓음 |
+| | NTFS | 암호화·권한 지원하는 현대 표준 |
+| | exFAT | 외장 드라이브·플래시 미디어용 |
+| **Linux** | ext4 | 가장 널리 쓰이는 기본 |
+| | XFS, Btrfs | 고급 대안 (Btrfs는 압축 지원) |
+| **macOS** | APFS | 2017년 이후 표준 |
+| | HFS+ | 이전 세대 |
+| **고급/크로스** | ZFS | 풀링·오류 정정 |
+
+많은 현대 파일 시스템은 **저널링(journaling)**으로 예기치 못한 종료 시 데이터 손실을
+막는다([File system, Wikipedia](https://en.wikipedia.org/wiki/File_system)).
+
+## "모든 것은 파일" — Unix의 추상화
+
+[Unix 계열](/profiles/unix-bsd)은 장치·파이프·소켓까지 *파일처럼* 다루는 통일된 추상화를
+도입했다. 이 발상은 이후 거의 모든 OS의 I/O 모델에 영향을 줬고, 연구용
+[분산 OS Plan 9](/classification/usage#분산-os)는 이를 극단까지 밀어붙였다.
+
+> **분류와의 연결:** 파일 시스템 선택은 [용도별 분류](/classification/usage)와 맞물린다 —
+> 서버·NAS는 ZFS/Btrfs의 무결성을, 외장 미디어는 exFAT의 호환성을, 모바일은 APFS/ext4의
+> 효율을 택한다.

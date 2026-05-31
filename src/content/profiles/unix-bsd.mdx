@@ -1,0 +1,48 @@
+# Unix · BSD 계보
+
+현대 OS 역사에서 가장 영향력 큰 가문. 서버·슈퍼컴·모바일·콘솔의 뿌리가 여기 있다.
+
+## Unix — 1969, 벨 연구소
+
+[Unix](https://en.wikipedia.org/wiki/Unix)는 **1969년 AT&T 벨 연구소**에서 Ken Thompson,
+Dennis Ritchie 등이 개발하기 시작했다. 처음엔 PDP-7 어셈블리로 작성됐고, **1973년
+Version 4에서 C 언어로 다시 작성**되며 *이식성*이라는 결정적 강점을 얻었다
+([Unix, Wikipedia](https://en.wikipedia.org/wiki/Unix)). 외부 공개는 1973년 10월.
+
+C로 재작성된 덕분에 Unix는 특정 하드웨어에 묶이지 않고 여러 기종으로 퍼졌고, 이후
+거의 모든 현대 OS의 설계 어휘(프로세스, 파일 디스크립터, 파이프, 계층적 파일 시스템,
+"모든 것은 파일")를 정립했다.
+
+## 두 갈래 — System V와 BSD
+
+1970년대 말~1980년대에 Unix는 두 계통으로 분화한다.
+
+- **AT&T System V** — AT&T가 1982년 System III를 상업화하고 **1989년 System V Release 4
+  (SVR4)**로 통합([Unix, Wikipedia](https://en.wikipedia.org/wiki/Unix)). 이 계통에서
+  상용 Unix인 **Solaris(Sun), AIX(IBM), HP-UX(HP)** 등이 파생됐다.
+- **BSD (Berkeley Software Distribution)** — UC 버클리에서 만든 Unix 변형. **1BSD가
+  1978년 3월 9일** 첫 배포([BSD, Wikipedia](https://en.wikipedia.org/wiki/Berkeley_Software_Distribution)).
+  TCP/IP 네트워킹, 가상 메모리, 소켓 API 등 핵심 기술을 다수 정립했다.
+
+## 386BSD에서 갈라진 현대 BSD
+
+버클리의 마지막 배포는 1995년 6월 **4.4BSD-Lite2**. 그 직전 William·Lynne Jolitz가
+Net/2 기반으로 만든 **386BSD**에서 오늘날의 BSD들이 갈라져 나왔다
+([BSD, Wikipedia](https://en.wikipedia.org/wiki/Berkeley_Software_Distribution)).
+
+| OS | 첫 등장 | 갈래 | 특징 |
+|---|---|---|---|
+| **FreeBSD** | 1993 | 386BSD → 4.4BSD-Lite | 성능·서버. Netflix CDN, PlayStation 4/5의 기반 |
+| **NetBSD** | 1993 | 386BSD → 4.4BSD-Lite | *이식성* 최우선 — 수십 종 아키텍처 |
+| **OpenBSD** | 1995 | NetBSD에서 포크 | *보안* 최우선 — OpenSSH의 모태 |
+
+> FreeBSD와 NetBSD는 모두 **1993년에 생겨** 1994년 4.4BSD-Lite 소스를 병합했고,
+> OpenBSD는 **1995년 NetBSD에서 포크**됐다
+> ([BSD, Wikipedia](https://en.wikipedia.org/wiki/Berkeley_Software_Distribution)).
+
+## 계보가 남긴 것
+
+BSD 계열의 *허용적(permissive) 라이선스*는 상용 제품이 소스를 닫고 재배포하는 것을
+허용한다. 그래서 Apple의 [macOS·iOS](/profiles/apple)(Darwin은 BSD 코드 포함),
+Sony PlayStation, Nintendo Switch 등 상용 기기가 BSD 코드를 채택할 수 있었다. 이는
+[라이선스별 분류](/classification/license)에서 GPL과의 차이로 다시 다룬다.

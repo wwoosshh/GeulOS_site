@@ -30,8 +30,12 @@
 | **CTSS / Multics** | 1961/1965 (MIT) | *시분할* 시스템. 여러 사용자 단말기 동시 접속. 보호 링(ring) 개념 |
 | **UNIX** | 1969 (AT&T Bell Labs) | Ken Thompson·Dennis Ritchie. Multics 단순화 + C로 재작성해 이식성 확보 |
 | **TOPS-10 / TOPS-20** | 1970년대 (DEC) | PDP-10 시분할 |
+| **VAX/VMS (→ OpenVMS)** | 1977 발표 (DEC) | VAX 미니컴퓨터용. *클러스터링* 기반 고가용성으로 은행·의료·통신에서 지금도 사용 ([OpenVMS](https://en.wikipedia.org/wiki/OpenVMS)) |
 
-이 시기에 가상 메모리·계층적 파일 시스템 등 현대 OS의 기초가 자리잡았다.
+이 시기에 [가상 메모리](/concepts/memory)·계층적 [파일 시스템](/concepts/filesystem) 등
+현대 OS의 기초가 자리잡았다. VMS는 DEC가 **1977년 10월 발표**하고 1978년 V1.0을 낸 미니컴퓨터
+OS로, 17년 무중단 클러스터 운영 사례가 보고될 만큼 고가용성에 특화됐다
+([OpenVMS, Wikipedia](https://en.wikipedia.org/wiki/OpenVMS)).
 
 ## 제4세대 (1980~1995) — 개인용 컴퓨터·GUI
 
@@ -44,8 +48,9 @@
 | **Classic Mac OS** | 1984 (Apple) | *상용 GUI*의 대중화 |
 | **AmigaOS** | 1985 (Commodore) | 선점형 멀티태스킹 + 멀티미디어 강점 |
 | **Atari TOS** | 1985 | Atari ST용 |
-| **Windows 1.0~3.x** | 1985~1992 (Microsoft) | DOS 위 GUI 쉘 |
-| **OS/2** | 1987 (IBM·Microsoft 공동) | 32비트, 멀티태스킹 |
+| **Windows 1.0~3.x** | 1985~1992 (Microsoft) | DOS 위 GUI 쉘 ([Windows](/profiles/windows)) |
+| **OS/2** | 1987 (IBM·Microsoft 공동) | 32비트 멀티태스킹. 1990년 결별 후 IBM 단독, **Warp 3(1994)** ([OS/2](https://en.wikipedia.org/wiki/OS/2)) |
+| **NeXTSTEP** | 1989 (NeXT) | Steve Jobs의 NeXT가 개발. 훗날 [macOS·iOS의 토대](/profiles/apple) ([macOS](https://en.wikipedia.org/wiki/MacOS)) |
 
 ## 제5세대 (1995~2007) — 네트워크·분산·서버
 
@@ -56,8 +61,13 @@
 | **Windows NT 계열** | 1993 (Microsoft) | NT 3.1 → 2000 → XP → Vista → 7 → ... 모놀리식 DOS 기반 9x 라인 흡수 |
 | **Linux** | 1991 (Linus Torvalds) | 오픈소스 Unix-like 커널. 서버·임베디드·슈퍼컴 표준 |
 | **FreeBSD / OpenBSD / NetBSD** | 1993~ | BSD Unix 후예 |
-| **macOS X** | 2001 (Apple) | Darwin(BSD+Mach) 커널 기반 |
+| **macOS X** | 2001 (Apple) | Darwin(BSD+Mach) 커널 기반 ([Apple 계보](/profiles/apple)) |
 | **Solaris** | 1992~ (Sun Microsystems) | 엔터프라이즈 Unix |
+| **BeOS** | 1995 (Be Inc.) | 멀티미디어 특화 *media OS*. 오픈소스 후속 [Haiku](https://en.wikipedia.org/wiki/Haiku_(operating_system))로 명맥 ([BeOS](https://en.wikipedia.org/wiki/BeOS)) |
+
+> **소비자(9x) → NT 통합:** 이 시기 Microsoft는 DOS 기반 9x 라인(95/98/Me)과 별도 설계의
+> NT 라인을 함께 운영하다, **2001년 Windows XP에서 둘을 통합**했다. 자세한 계보는
+> [Windows (DOS→NT)](/profiles/windows) 참조.
 
 ## 제6세대 (2007~현재) — 모바일·클라우드·AI
 

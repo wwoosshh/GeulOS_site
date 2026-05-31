@@ -1,0 +1,42 @@
+# Linux
+
+가장 널리 쓰이는 OS 커널. 단일 제품이 아니라 *커널 + 배포판* 생태계다.
+
+## 1991, Linus Torvalds
+
+[Linux 커널](https://en.wikipedia.org/wiki/Linux)은 **1991년 9월 17일 Linus Torvalds**가
+처음 공개했다([Linux, Wikipedia](https://en.wikipedia.org/wiki/Linux)). Unix를 본떠
+*새로 작성한* 커널이라 AT&T 코드를 포함하지 않으며, **GPLv2** 라이선스로 배포된다 —
+Torvalds는 커널을 GPLv3로 올리지 않고 v2에 머무르겠다고 밝혔다.
+
+GPLv2의 *copyleft*(파생물도 같은 라이선스로 공개) 덕분에 전 세계 기여자가 같은 커널을
+함께 발전시킬 수 있었고, 이것이 Linux 확산의 핵심 동력이 됐다.
+
+## 커널 vs 배포판
+
+Linux "커널"은 자원 관리의 핵심만 담당하고, 실제 사용 환경은 **배포판(distribution)**이
+GNU 도구·셸·패키지 관리자·데스크탑 환경과 묶어 완성한다.
+
+- **Debian** 계열 — Ubuntu, Linux Mint, Pop!_OS 등.
+- **Red Hat** 계열 — RHEL, Fedora, CentOS/Rocky 등.
+- **SUSE** 계열 — openSUSE, SUSE Linux Enterprise.
+- **Arch** — 롤링 릴리스, 미니멀.
+
+## 어디서 지배하는가
+
+[Linux, Wikipedia](https://en.wikipedia.org/wiki/Linux) 기준 검증된 사실:
+
+- **웹 서버** — 상위 100만 웹 서버의 **96.4% 이상**이 Linux 기반.
+- **슈퍼컴퓨터** — 세계 [TOP500](https://www.top500.org/statistics/details/osfam/1/) 전체가 Linux.
+- **모바일** — Linux 커널을 쓰는 [Android](/profiles/mobile)까지 합치면 범용 OS 중 *설치 기반
+  최대*.
+- **데스크탑** — 2024년 3월 기준 약 4%로, 데스크탑만은 소수.
+- **영화 제작** — DreamWorks·Pixar·ILM 등이 Linux로 이전. 첫 대형 Linux 제작 영화는
+  *타이타닉*(1997).
+
+## 왜 모든 영역에 퍼졌나
+
+같은 커널이 *데스크탑·서버·임베디드·슈퍼컴*에 모두 들어가는 이유는 (1) 무료 + 자유로운
+수정, (2) 모듈식 구조로 초소형~초대형까지 스케일, (3) 거대한 기여자 생태계 때문이다.
+구조적으로는 [모놀리식 커널](/classification/kernel)이며, 용도별 위치는
+[용도별 분류](/classification/usage)에서 다룬다.
